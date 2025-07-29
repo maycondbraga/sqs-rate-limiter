@@ -1,0 +1,38 @@
+services:
+  localstack:
+    container_name: sqs
+    image: localstack/localstack
+    hostname: localstack
+    ports:
+      - "127.0.0.1:4566:4566"
+    environment:
+      - SKIP_SSL_CERT_DOWNLOAD=1
+      - SERVICES=sqs
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_DEFAULT_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./scripts/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh"
+    networks:
+      - ls-network
+
+  sqs-init:
+    container_name: setup-sqs
+    image: amazon/aws-cli
+    depends_on:
+      - localstack
+    environment:
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+    entrypoint: [ "sh", "-c" ]
+    command: >
+      "aws sqs create-queue --queue-name limited-queue --endpoint-url=http://localstack:4566 --region us-east-1 &&
+       echo 'Fila criada com sucesso: limited-queue'"
+    networks:
+      - ls-network
+
+networks:
+  ls-network:
+    driver: bridge

@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    aws:
+      region:
+        static: us-east-1
+      credentials:
+        access-key: dummy
+        secret-key: dummy
+      sqs:
+        endpoint: http://localhost:4566
+
+cloud:
+  aws:
+    sqs:
+      listener:
+        auto-startup: true
+      queue:
+        name: limited-queue
