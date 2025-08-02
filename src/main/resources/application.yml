@@ -13,6 +13,7 @@ cloud:
   aws:
     sqs:
       listener:
-        auto-startup: true
-      queue:
-        name: limited-queue
+        auto-startup: false
+
+queue:
+  name: my-local-queue
