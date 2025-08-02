@@ -2,6 +2,7 @@ package com.md.sqsratelimiter.limiter;
 
 import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
 import io.awspring.cloud.sqs.listener.SqsMessageListenerContainer;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -17,12 +18,13 @@ public class ListenerManager {
 
     private final SqsAsyncClient client;
     private final ValidaLiberacaoMensagemUseCase useCase;
+    private final FeatureToggleService toggleService;
     private final AtomicReference<SqsMessageListenerContainer<MensagemLiberacaoDto>> containerRef = new AtomicReference<>();
 
     public ListenerManager(SqsAsyncClient client, FeatureToggleService toggleService, ValidaLiberacaoMensagemUseCase useCase) {
         this.client = client;
+        this.toggleService = toggleService;
         this.useCase = useCase;
-        createContainer(toggleService.getConfig());
     }
 
     private void createContainer(RateLimitConfigDto config) {
@@ -44,6 +46,11 @@ public class ListenerManager {
 
         newContainer.start();
         containerRef.set(newContainer);
+    }
+
+    @PostConstruct
+    public void init() {
+        createContainer(toggleService.getConfig());
     }
 
     @EventListener
