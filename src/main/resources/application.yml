@@ -15,5 +15,6 @@ cloud:
       listener:
         auto-startup: false
 
-queue:
-  name: my-local-queue
+sqs:
+  queue:
+    name: limited-queue

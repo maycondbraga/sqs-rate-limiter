@@ -2,6 +2,7 @@ package com.md.sqsratelimiter.limiter;
 
 import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
 import io.awspring.cloud.sqs.listener.SqsMessageListenerContainer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
@@ -10,6 +11,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class ListenerManager {
+
+    @Value("${sqs.queue.name}")
+    private String sqsQueueName;
 
     private final SqsAsyncClient client;
     private final ValidaLiberacaoMensagemUseCase useCase;
@@ -34,7 +38,7 @@ public class ListenerManager {
                         .sqsAsyncClient(client)
                         .build();
 
-        SqsMessageListenerContainer<MensagemLiberacaoDto> newContainer = factory.createContainer("my-local-queue");
+        SqsMessageListenerContainer<MensagemLiberacaoDto> newContainer = factory.createContainer(sqsQueueName);
 
         newContainer.setMessageListener(useCase::execute);
 
