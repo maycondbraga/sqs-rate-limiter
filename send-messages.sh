@@ -6,16 +6,23 @@ QUEUE_URL=$(aws sqs get-queue-url \
   --region us-east-1 \
   --output text)
 
-echo "Enviando 100 mensagens para $QUEUE_URL..."
+echo "Enviando 1000 mensagens para $QUEUE_URL..."
 
-for i in $(seq 1 100); do
-  aws sqs send-message \
+for batch in $(seq 0 99); do
+  entries=()
+  for i in $(seq 1 10); do
+    msg_num=$((batch * 10 + i))
+    if [ $msg_num -le 1000 ]; then
+      entries+=("Id=msg$msg_num,MessageBody=\"Mensagem número $msg_num\"")
+    fi
+  done
+  aws sqs send-message-batch \
     --queue-url "$QUEUE_URL" \
-    --message-body "Mensagem número $i" \
     --endpoint-url http://localhost:4566 \
     --region us-east-1 \
+    --entries "${entries[@]}" \
     > /dev/null
-  echo "Mensagem $i enviada"
+  echo "Lote $((batch + 1)) enviado"
 done
 
 echo "✅ Todas as mensagens foram enviadas com sucesso."
