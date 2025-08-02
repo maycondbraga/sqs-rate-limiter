@@ -34,8 +34,9 @@ public class ListenerManager {
                         .sqsAsyncClient(client)
                         .build();
 
-        SqsMessageListenerContainer<MensagemLiberacaoDto> newContainer =
-                factory.createContainer("my-local-queue", MensagemLiberacaoDto.class, useCase);
+        SqsMessageListenerContainer<MensagemLiberacaoDto> newContainer = factory.createContainer("my-local-queue");
+
+        newContainer.setMessageListener(useCase::execute);
 
         newContainer.start();
         containerRef.set(newContainer);
