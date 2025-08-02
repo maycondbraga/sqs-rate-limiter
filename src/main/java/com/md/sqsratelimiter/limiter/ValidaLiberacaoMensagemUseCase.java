@@ -1,5 +1,6 @@
 package com.md.sqsratelimiter.limiter;
 
+import io.awspring.cloud.sqs.listener.acknowledgement.AcknowledgementCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
@@ -15,12 +16,12 @@ public class ValidaLiberacaoMensagemUseCase {
         this.rateLimiterService = rateLimiterService;
     }
 
-    public void execute(Message<MensagemLiberacaoDto> mensagem) {
+    public void execute(Message<MensagemLiberacaoDto> mensagem, AcknowledgementCallback<MensagemLiberacaoDto> ack) {
         if (rateLimiterService.tryConsume()) {
             logger.info("✔️ Mensagem recebida: {}", mensagem.getPayload());
+            ack.onAcknowledge(mensagem);
         }
 
         logger.error("❌ Rate limit excedido — mensagem será reprocessada.");
-        throw new RuntimeException("Rate limit exceeded");
     }
 }

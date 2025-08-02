@@ -2,6 +2,8 @@ package com.md.sqsratelimiter.limiter;
 
 import io.awspring.cloud.sqs.config.SqsMessageListenerContainerFactory;
 import io.awspring.cloud.sqs.listener.SqsMessageListenerContainer;
+import io.awspring.cloud.sqs.listener.acknowledgement.AcknowledgementCallback;
+import io.awspring.cloud.sqs.listener.acknowledgement.handler.AcknowledgementMode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -31,6 +33,7 @@ public class ListenerManager {
         SqsMessageListenerContainerFactory<MensagemLiberacaoDto> factory =
                 SqsMessageListenerContainerFactory.<MensagemLiberacaoDto>builder()
                         .configure(opts -> opts
+                                .acknowledgementMode(AcknowledgementMode.MANUAL)
                                 .maxConcurrentMessages(config.maxConcurrentMessages())
                                 .maxMessagesPerPoll(config.maxMessagesPerPoll())
                         )
@@ -39,7 +42,10 @@ public class ListenerManager {
 
         SqsMessageListenerContainer<MensagemLiberacaoDto> newContainer = factory.createContainer(sqsQueueName);
 
-        newContainer.setMessageListener(useCase::execute);
+        newContainer.setMessageListener(message -> {
+            AcknowledgementCallback<MensagemLiberacaoDto> ack = (AcknowledgementCallback) message.getHeaders().get("AcknowledgementCallback");
+            useCase.execute(message, ack);
+        });
 
         newContainer.start();
         containerRef.set(newContainer);

@@ -9,8 +9,8 @@ public class FeatureToggleService {
 
     private final AtomicInteger rateLimit = new AtomicInteger(4);
     private final AtomicInteger refillIntervalSeconds = new AtomicInteger(1);
-    private final AtomicInteger maxMessagesPerPoll = new AtomicInteger(5);
-    private final AtomicInteger maxConcurrentMessages = new AtomicInteger(5);
+    private final AtomicInteger maxMessagesPerPoll = new AtomicInteger(2);
+    private final AtomicInteger maxConcurrentMessages = new AtomicInteger(3);
 
     public RateLimitConfigDto getConfig() {
         return new RateLimitConfigDto(
