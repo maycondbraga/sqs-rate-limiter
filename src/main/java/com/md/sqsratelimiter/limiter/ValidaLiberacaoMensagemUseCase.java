@@ -18,10 +18,10 @@ public class ValidaLiberacaoMensagemUseCase {
 
     public void execute(Message<MensagemLiberacaoDto> mensagem, AcknowledgementCallback<MensagemLiberacaoDto> ack) {
         if (rateLimiterService.tryConsume()) {
-            logger.info("✔️ Mensagem recebida: {}", mensagem.getPayload());
+            logger.info("✔️ Mensagem recebida. Payload: {}", mensagem.getPayload());
             ack.onAcknowledge(mensagem);
         }
 
-        logger.error("❌ Rate limit excedido — mensagem será reprocessada.");
+        logger.error("❌ Rate limit excedido. Payload: {}", mensagem.getPayload());
     }
 }
