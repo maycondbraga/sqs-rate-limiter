@@ -1,5 +1,6 @@
-package com.md.sqsratelimiter.limiter;
+package com.md.sqsratelimiter.service;
 
+import com.md.sqsratelimiter.dto.RateLimitConfigDto;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.atomic.AtomicInteger;

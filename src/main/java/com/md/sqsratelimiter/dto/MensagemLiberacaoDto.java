@@ -1,4 +1,4 @@
-package com.md.sqsratelimiter.limiter;
+package com.md.sqsratelimiter.dto;
 
 import java.time.LocalDate;
 

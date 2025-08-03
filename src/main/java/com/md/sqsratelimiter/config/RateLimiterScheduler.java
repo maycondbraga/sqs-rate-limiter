@@ -1,5 +1,8 @@
-package com.md.sqsratelimiter.limiter;
+package com.md.sqsratelimiter.config;
 
+import com.md.sqsratelimiter.dto.RateLimitChangedEventDto;
+import com.md.sqsratelimiter.dto.RateLimitConfigDto;
+import com.md.sqsratelimiter.service.FeatureToggleService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

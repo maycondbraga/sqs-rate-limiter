@@ -1,5 +1,6 @@
-package com.md.sqsratelimiter.limiter;
+package com.md.sqsratelimiter.service;
 
+import com.md.sqsratelimiter.dto.RateLimitConfigDto;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
