@@ -20,8 +20,8 @@ public class ValidaLiberacaoMensagemUseCase {
         if (rateLimiterService.tryConsume()) {
             logger.info("✔️ Mensagem recebida. Payload: {}", mensagem.getPayload());
             ack.onAcknowledge(mensagem);
+        } else {
+            logger.warn("❌ Rate limit excedido. Payload: {}", mensagem.getPayload());
         }
-
-        logger.error("❌ Rate limit excedido. Payload: {}", mensagem.getPayload());
     }
 }
